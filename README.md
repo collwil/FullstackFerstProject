@@ -74,3 +74,98 @@ _________________
 
 #### 4 Создание маршрутов (Routes) и API Endpoints 
 
+
+
+HTML 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>Document</title>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <td>
+                    ID
+                </td>
+                <td>
+                    name
+                </td>
+                <td>
+                    age
+                </td>
+            </tr>
+        </thead>
+        <tbody id = 'tbody'>
+            
+        </tbody>
+    </table>
+    <script src="./script.js"></script>
+</body>
+</html>
+
+js 
+const dataset = [
+    { id: 1, name: 'Ivanov', age: 30 },
+    { id: 2, name: 'Petrov', age: 24 },
+    { id: 3, name: 'Sidorov', age: 10 }
+]
+
+const table = (data) => {
+const tbody = document.getElementById('tbody')
+
+data.forEach(element => {
+tbody.innerHTML =`
+ <tr><td> ${element.id} </td>
+
+ <td> ${element.name} </td>
+ 
+<td> ${element.age} </td></tr>`
+})
+
+}
+table(dataset)
+
+
+
+Данное решение не оптимальное потому что количество атрибутов получается фиксированное нашей html разметкой 
+
+Самое главное - в коде есть уязвимость : переддача данных через Inner создает XSS уязвимость
+
+Поетому рассмотрим другие варианты :
+2 Исключим XSS уязвимость 
+
+const dataset = [
+    { id: 1, name: "Ivanov", age: 30},
+    { id: 2, name: "Petrov", age: 24},
+    { id: 3, name: "Sidorov", age: 10},
+]
+
+const table = (data) => {
+    const tbody = document.getElementById("tbody")
+    data.forEach( element => {
+        const tr = tbody.insertRow()
+        const cellId = tr.insertCell()
+        cellId.textContent = element.id
+        const cellName = tr.insertCell()
+        cellName.textContent = element.name
+        const cellAge = tr.insertCell()
+        cellAge.textContent = element.age})
+
+
+
+
+}
+
+table(dataset)
+
+
+
+отрисовать полностью динамическую таблицу и что бы заголовки учитыались и что бы строки и ячейки таблицы создавались  по количеству чего то там в обьекте 
+
+перебор ключей обьектов Object.keys(data[0])
